@@ -313,13 +313,13 @@
 
 .material-button,
 .alt-2 {
-   width: 140px;
-   height: 140px;
-   border-radius: 50%;
+   width: 45px;    /* size of button */
+   height: 45px;   /* size of button*/
+   border-radius: 100%;
    background: #000000;
    position: absolute;
    top: 40px;
-   right: -70px;
+   right: -20px; /* locate of button */
    cursor: pointer;
    z-index: 100;
    transform: translate(0%, 0%);
@@ -336,6 +336,7 @@
    height: 100%;
 }
 
+/* plus */
 .material-button .shape:before,
 .alt-2 .shape:before,
 .material-button .shape:after,
@@ -343,8 +344,8 @@
    content: "";
    background: #fff;
    position: absolute;
-   top: 50%;
-   left: 50%;
+   top: 17%;
+   left: 49%;
    transform: translate(-50%, -50%) rotate(360deg);
    -webkit-transform: translate(-50%, -50%) rotate(360deg);
    -ms-transform: translate(-50%, -50%) rotate(360deg);

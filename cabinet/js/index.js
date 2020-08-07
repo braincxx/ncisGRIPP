@@ -44,15 +44,19 @@ $(function() {
          "left": "-250px",
 
       }, 600);
+	   
       $("button", this).addClass('active');
    })
 
 	/* Button */
    $(".alt-2").click(function() {
-      if (!$(this).hasClass('material-button')) {
+      if (!$(this).hasClass('material-button')) {	  
+		$(".materialContainer").css({
+			"top": "30%"})
+		
          $(".shape").css({
             "width": "100%",
-            "height": "100%",
+            "height": "300%",
             "transform": "rotate(0deg)"
          })
 
@@ -63,8 +67,8 @@ $(function() {
          }, 600)
 
          $(this).animate({
-            "width": "140px", /* x size of circle */
-            "height": "140px" /* y */ 
+            "width": "45px", /* x size of circle */
+            "height": "45px" /* y */ 
          }, 500, function() {
             $(".box").removeClass("back");
 
@@ -89,6 +93,9 @@ $(function() {
             })
             $(".box").addClass("back");
          }, 200)
+	
+         $(".materialContainer").css({"top": "35%"}) /* Сдвиг окна вверх при нажатии крестика */
+
          $(this).addClass('active').animate({
             "width": "900px",
             "height": "900px"
@@ -96,10 +103,11 @@ $(function() {
 
          setTimeout(function() {
             $(".shape").css({
-               "width": "60%", /* locate of plus */
-               "height": "25%",
+               "width": "90%", /* locate of plus */
+               "height": "70%",
                "transform": "rotate(45deg)"
             })
+			$(".material-button").css({"width": "45px", "height": "45px"})
 
             $(".overbox .title").fadeIn(300);
             $(".overbox .input").fadeIn(300);
@@ -111,6 +119,7 @@ $(function() {
       }
 
       if ($(".alt-2").hasClass('material-buton')) {
+         $(".materialContainer").css({"top": "50%"})
          $(".alt-2").removeClass('material-buton');
          $(".alt-2").addClass('material-button');
       }
