@@ -79,14 +79,6 @@
    -webkit-transition: 300ms cubic-bezier(.4, 0, .2, 1);
    -ms-transition: 300ms cubic-bezier(.4, 0, .2, 1);
 }
-.inputOther,
-.inputOther label,
-.inputOther input,
-.inputOther .spin {
-   transition: 300ms cubic-bezier(.4, 0, .2, 1);
-   -webkit-transition: 300ms cubic-bezier(.4, 0, .2, 1);
-   -ms-transition: 300ms cubic-bezier(.4, 0, .2, 1);
-}
 
 .material-button,
 .alt-2,
@@ -107,20 +99,9 @@
    width: 100%;
    float: left;
 }
-.inputOther,
-.inputOther label,
-.inputOther input,
-.inputOther .spin {
-   width: 100%;
-   float: left;
-}
 
 .input,
 .button {
-   margin-top: 30px;
-   height: 70px;
-}
-.inputOther {
    margin-top: 30px;
    height: 70px;
 }
@@ -131,16 +112,12 @@
 .button button {
    position: relative;
 }
-.inputOther,
-.inputOther input {
-   position: relative;
-}
 
 .input input {
-   height: 50px;
-   top: 10px;
-   border: none;
-   background: transparent;
+	height: 50px;
+	top: 10px;
+	border: none;
+	background: transparent;
 }
 
 .input input,
@@ -196,6 +173,9 @@
    left: 20%;
 }
 
+.overbox .button {
+	top: -11%
+}
 .button.login button,
 .button button {
    width: 100%;
@@ -288,7 +268,7 @@
 
 .overbox {
    width: 100%;
-   height: 100%;
+   height: 150%;
    position: absolute;
    top: 0;
    left: 0;
@@ -307,16 +287,27 @@
 }
 
 .overbox .title {
-   width: 80%;
+   width: 100%;
+	top: -6%
 }
 
 .overbox .input {
-   margin-top: 10px;
+   margin-top: -5px;
+	top: -8%
 }
 
 .overbox .input input,
 .overbox .input label {
-   color: #fff;
+	color: #fff;
+}
+
+.overbox .input input {
+	font-size: 17px;
+	height: 80px;
+}
+.overbox .input label {
+	font-size: 19px;
+	top: 25px
 }
 
 .overbox .material-button,
@@ -328,13 +319,13 @@
 
 .material-button,
 .alt-2 {
-   width: 140px;
-   height: 140px;
-   border-radius: 50%;
+   width: 45px;    /* size of button */
+   height: 45px;   /* size of button*/
+   border-radius: 100%;
    background: #000000;
    position: absolute;
    top: 40px;
-   right: -70px;
+   right: -20px; /* locate of button */
    cursor: pointer;
    z-index: 100;
    transform: translate(0%, 0%);
@@ -351,6 +342,7 @@
    height: 100%;
 }
 
+/* plus */
 .material-button .shape:before,
 .alt-2 .shape:before,
 .material-button .shape:after,
@@ -358,8 +350,8 @@
    content: "";
    background: #fff;
    position: absolute;
-   top: 50%;
-   left: 50%;
+   top: 17%;
+   left: 49%;
    transform: translate(-50%, -50%) rotate(360deg);
    -webkit-transform: translate(-50%, -50%) rotate(360deg);
    -ms-transform: translate(-50%, -50%) rotate(360deg);
