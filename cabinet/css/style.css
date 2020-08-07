@@ -173,6 +173,9 @@
    left: 20%;
 }
 
+.overbox .button {
+	top: -11%
+}
 .button.login button,
 .button button {
    width: 100%;
@@ -284,11 +287,13 @@
 }
 
 .overbox .title {
-   width: 80%;
+   width: 100%;
+	top: -6%
 }
 
 .overbox .input {
-   margin-top: 0px;
+   margin-top: -5px;
+	top: -8%
 }
 
 .overbox .input input,
@@ -298,10 +303,11 @@
 
 .overbox .input input {
 	font-size: 17px;
-	height: 60px;
+	height: 80px;
 }
 .overbox .input label {
-	font-size: 19px
+	font-size: 19px;
+	top: 25px
 }
 
 .overbox .material-button,

@@ -7,7 +7,7 @@ $(function() {
             "line-height": "18px",
             "font-size": "18px",
             "font-weight": "100",
-            "top": "0px"
+            "top": "15px"
          })
          $(".spin", this).css({
             "width": "100%"
@@ -21,9 +21,9 @@ $(function() {
          $(this).parent(".input").each(function() {
             $("label", this).css({
                "line-height": "60px",
-               "font-size": "24px",
+               "font-size": "18px",
                "font-weight": "300",
-               "top": "10px"
+               "top": "25px"
             })
          });
 
@@ -43,8 +43,7 @@ $(function() {
          "top": "-250px",
          "left": "-250px",
 
-      }, 600);
-	   
+      }, 600);   
       $("button", this).addClass('active');
    })
 
@@ -77,6 +76,7 @@ $(function() {
 
          $(".overbox .title").fadeOut(300);
          $(".overbox .input").fadeOut(300);
+         $(".overbox .input input").css({"font-size": "17px"})
          $(".overbox .button").fadeOut(300);
 
          $(".alt-2").addClass('material-buton');
@@ -93,8 +93,7 @@ $(function() {
             })
             $(".box").addClass("back");
          }, 200)
-	
-         $(".materialContainer").css({"top": "35%"}) /* Сдвиг окна вверх при нажатии крестика */
+         $(".materialContainer").css({"top": "35%"})
 
          $(this).addClass('active').animate({
             "width": "900px",
@@ -104,11 +103,11 @@ $(function() {
          setTimeout(function() {
             $(".shape").css({
                "width": "90%", /* locate of plus */
-               "height": "70%",
+               "height": "75%",
+               "top": "-6%",
                "transform": "rotate(45deg)"
             })
 			$(".material-button").css({"width": "45px", "height": "45px"})
-
             $(".overbox .title").fadeIn(300);
             $(".overbox .input").fadeIn(300);
             $(".overbox .button").fadeIn(300);
