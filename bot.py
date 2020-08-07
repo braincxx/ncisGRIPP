@@ -1,23 +1,50 @@
 import datetime
-import pytz
-from pprint import pprint
+import logging
 
-from telegram.ext import Updater, Defaults
-from telegram.ext import CommandHandler
-from telegram.ext import JobQueue
+from telegram.ext import Updater, Defaults, Filters
+from telegram.ext import CommandHandler, ConversationHandler, MessageHandler
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 
-from config import TOKEN
+from application.repository.users_repository import UsersRepository
+from application.service.users import UsersService
+
+import config
 
 
-timezone = pytz.timezone('Europe/Moscow')
+logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+                    level=logging.INFO)
+
+logger = logging.getLogger(__name__)
+
+
+def initialize():
+    users_db = UsersRepository().instance().get_all()
+    for user in users_db:
+        init_user(user)
+
+
+def init_user(user):
+    if user.tg_logged == 1:
+        dp[user.id]['name'] = user.name
+        dp[user.id]['surname'] = user.surname
+        dp[user.id]['email'] = user.email
+        dp[user.id]['logged'] = True
 
 
 # /start
 def do_start_command(update, context):
-    context.user_data['mailing'] = 'normal'
+    mailing = updater.job_queue
+    mailing.run_daily(
+        callback=mail_notification,
+        time=datetime.time(18, 48, 10),
+        context=context
+    )
+
     context.bot.sendMessage(
         chat_id=update.message.chat_id,
-        text="привет, тут заглушка, надеюсь это временно"
+        text="""Вас приветствует бот национальной системы оперативного оповещения.
+Моя задача отправлять актуальные уведомления на тему г
+"""
     )
 
 
@@ -30,92 +57,145 @@ def show_help_command(update, context):
         )
 
 
-# /set_mailing
-def set_mailing(update, context):
-    if not context.args:
+def mail_notification(context):
+    for user_id in dp.user_data.keys():
         context.bot.send_message(
-            chat_id=update.message.chat_id,
-            text='Вы не указали режим, попробуйте еще раз'
+            chat_id=user_id,
+            text='*not yet implemented*'
         )
-    elif context.args[0] == 'no_spam' and context.user_data['mailing'] != 'no_spam':
-        context.user_data['mailing'] = 'no_spam'
-        context.bot.send_message(
-            chat_id=update.message.chat_id,
-            text='Теперь бот не будет слать вам уведомления'
-        )
-    elif context.args[0] == 'silent' and context.user_data['mailing'] != 'silent':
-        context.user_data['mailing'] = 'silent'
-        context.bot.send_message(
-            chat_id=update.message.chat_id,
-            text='Уведомления с данного момента будут приходить без звука'
-        )
-    elif context.args[0] == 'normal' and context.user_data['mailing'] != 'normal':
-        context.user_data['mailing'] = 'normal'
-        context.bot.send_message(
-            chat_id=update.message.chat_id,
-            text='Установлен обычный режим уведомлений'
-        )
+
+
+def show_all_mails(update, context):
+
+
+
+# /login
+def do_login(update, context):
+    data = {
+        'email': context.user_data['email'],
+        'password': context.user_data['password'],
+    }
+    user = UsersService().instance().find_user_by_credentials(data['email'], data['password'])
+    del context.user_data['password']
+
+    if user:
+        context['name'] = user.name
+        context['surname'] = user.surname
+        user.tg_logged = 1
+        UsersRepository.save(user)
     else:
         context.bot.send_message(
             chat_id=update.message.chat_id,
-            text='Такого режима не существует, или вы уже его используете'
+            text="Неверный адрес электронной почты или пароль"
         )
 
 
-def mail_notification(update, context):
-    if context.user_data != 'no_spam':
-        notification = True
-        if context.user_data == 'silent':
-            notification = False
-        context.bot.send_message(
-            chat_id=context.message.chat_id,
-            disable_notification=notification,
-            text='скоро будет...'
+def login_delete_password(update, context):
+    context.bot.deleteMessage(
+        chat_id=update.message.chat_id,
+        message_id=update.message.message_id,
+    )
+    context.bot.sendMessage(
+        chat_id=update.message.chat_id,
+        text="<b>*сообщение с паролем удалено*</b>"
+    )
+
+
+def do_login_at_once(update, context):
+    if 'logged' in context.user_data.keys() and context.user_data['logged']:
+        context.bot.sendMessage(
+            chat_id=update.message.chat_id,
+            text="Вы уже авторизованы"
         )
-    else:
-        pass
+        if len(context.args) == 2:  # Removing message in case if password was there
+            context.bot.deleteMessage(
+                chat_id=update.message.chat_id,
+                message_id=update.message.message_id,
+            )
+        return ConversationHandler.END
+    if len(context.args) > 2:
+        context.bot.sendMessage(
+            chat_id=update.message.chat_id,
+            text="К сожалению, команда принимает максимум два параметра - электронную почту и пароль"
+        )
+        return ConversationHandler.END
+    try:
+        context.user_data['email'] = context.args[0]
+        try:
+            context.user_data['password'] = context.args[1]
+            login_delete_password(update, context)
+            do_login(update, context)
+            return ConversationHandler.END
+        except IndexError:
+            context.bot.sendMessage(
+                chat_id=update.message.chat_id,
+                text="Введите пароль"
+            )
+            return PASSWORD
+    except IndexError:
+        context.bot.sendMessage(
+            chat_id=update.message.chat_id,
+            text="Введите адрес электронной почты"
+        )
+        return EMAIL
 
 
-updater = Updater(
-    token=TOKEN,
-    defaults=Defaults(
-        parse_mode="HTML",
-        disable_web_page_preview=1
-    ),
-    use_context=True
-)
+def do_login_email(update, context):
+    context.user_data['email'] = update.message.text
+    context.bot.sendMessage(
+        chat_id=update.message.chat_id,
+        text="Введите пароль"
+    )
+    return PASSWORD
 
-dp = updater.dispatcher
-dp.add_handler(
-    CommandHandler(
-        command='start',
-        callback=do_start_command
-    )
-)
-dp.add_handler(
-    CommandHandler(
-        command='help',
-        callback=show_help_command
-    )
-)
-dp.add_handler(
-    CommandHandler(
-        command='set_mailing',
-        callback=set_mailing,
-        pass_args=True
-    )
-)
 
-mailing = JobQueue()
-mailing.set_dispatcher(dp)
-mailing.run_daily(
-    callback=mail_notification,
-    time=datetime.time(
-        hour=8,
-        tzinfo=timezone
-    )
-)
+def do_login_password(update, context):
+    context.user_data['password'] = update.message.text
+    login_delete_password(update, context)
+    do_login(update, context)
+    return ConversationHandler.END
+
 
 if __name__ == '__main__':
+    updater = Updater(
+        token=config.TOKEN,
+        defaults=Defaults(
+            parse_mode="HTML",
+            disable_web_page_preview=1
+        ),
+        use_context=True
+    )
+
+    dp = updater.dispatcher
+    # /start
+    dp.add_handler(
+        CommandHandler(
+            command='start',
+            callback=do_start_command
+        )
+    )
+    # /help
+    dp.add_handler(
+        CommandHandler(
+            command='help',
+            callback=show_help_command
+        )
+    )
+    # /login
+    EMAIL, PASSWORD = range(2)
+    dp.add_handler(
+        ConversationHandler(
+            entry_points=[CommandHandler('login', callback=do_login_at_once)],
+            states={
+                EMAIL: [MessageHandler(Filters.text, callback=do_login_email)],
+                PASSWORD: [MessageHandler(Filters.text, callback=do_login_password)]
+            },
+            fallbacks=[]
+        )
+    )
+    # /all_mails
+    dp.add_handler(CommandHandler('all_mails', callback=show_all_mails))
+
+    initialize()
     updater.start_polling()
     updater.idle()
