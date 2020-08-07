@@ -1,0 +1,46 @@
+{% extends 'layouts/main.html' %}
+
+{% block content %}
+
+        <div class="pt-1">&nbsp;</div>
+        <div class="container">
+          <div class="row">
+            <div class="col-md-12 text-left">
+                <a class="btn btn-primary" href="{{ url_for('profile_edit') }}"><i class="fa fa-edit"></i>&nbsp; Редактировать профиль</a>
+                <a class="btn btn-success" href="{{ url_for('profile_generate_token') }}"><i class="fa fa-lock"></i>&nbsp; Создать токен доступа</a>
+            </div>
+          </div>
+        </div>
+        <div class="pt-2">&nbsp;</div>
+
+        <h3>Токены доступа</h3>
+
+        <div class="pt-2">&nbsp;</div>
+        <div class="container">
+          <div class="row">
+            <div class="col-md-12">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <td>ID</td>
+                    <td>Токен</td>
+                    <td>Дата создания</td>
+                    <td>Действия</td>
+                  </tr>
+                </thead>
+                <tbody>
+                    {% for item in tokens %}
+                  <tr>
+                    <td><a href="#">{{ item.id }}</a></td>
+                    <td>{{ item.token }}</td>
+                    <td class="d-none d-md-table-cell d-lg-table-cell">{{ item.creation_date }}</td>
+                    <td><a class="btn btn-danger" href="{{ url_for('profile_delete_token', token_id=item.id) }}" >Удалить</a></td>
+                  </tr>
+                    {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+{% endblock %}
