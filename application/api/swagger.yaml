@@ -1,0 +1,148 @@
+openapi: 3.0.0
+info:
+  title: Система оповещения
+  license:
+    name: MIT
+  version: 0.5.0
+servers:
+- url: /api
+  description: Api Server
+security:
+- ApiKeyAuth: []
+paths:
+  /users/{userId}:
+    get:
+      tags:
+      - Пользователи
+      summary: Получить информацию о пользователе
+      operationId: users_user_id_get
+      parameters:
+      - name: userId
+        in: path
+        description: ID пользователя
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Список получен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        default:
+          description: Ошибка обработки запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-openapi-router-controller: application.views.api.routes
+  /notifications:
+    get:
+      tags:
+      - Уведомления
+      summary: Получить уведомления текущего пользователя
+      operationId: notifications_get
+      responses:
+        "200":
+          description: Список получен
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Notification'
+        default:
+          description: Ошибка обработки запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-openapi-router-controller: application.views.api.routes
+#  /notifications/{userId}:
+#    get:
+#      tags:
+#      - Уведомления
+#      summary: Получить уведомления пользователя
+#      operationId: assigned_tests_test_id_tasks_task_id_get
+#      parameters:
+#      - name: userId
+#        in: path
+#        description: ID пользователя
+#        required: true
+#        style: simple
+#        explode: false
+#        schema:
+#          type: string
+#      responses:
+#        "200":
+#          description: Список получен
+#          content:
+#            application/json:
+#              schema:
+#                type: array
+#                items:
+#                  $ref: '#/components/schemas/Notification'
+#        default:
+#          description: Ошибка обработки запроса
+#          content:
+#            application/json:
+#              schema:
+#                $ref: '#/components/schemas/Error'
+#      x-openapi-router-controller: application.views.api.routes
+components:
+  schemas:
+    User:
+      required:
+      - email
+      - id
+      - name
+      - role
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+        role:
+          type: string
+          enum:
+          - User
+          - Admin
+    Notification:
+      required:
+      - id
+      - recepient_id
+      - title
+      - text
+      - date
+      type: object
+      properties:
+        id:
+          type: integer
+        recepient_id:
+          type: integer
+        title:
+          type: string
+        text:
+          type: string
+        date:
+          type: string
+          format: date-time
+    Error:
+      required:
+      - message
+      type: object
+      properties:
+        message:
+          type: string
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      name: ACCESS-TOKEN
+      in: header
+      x-apikeyInfoFunc: application.views.api.routes.check_ApiKeyAuth
