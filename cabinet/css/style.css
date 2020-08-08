@@ -124,8 +124,8 @@
 .input label,
 .button button {
    font-family: 'Roboto', sans-serif;
-   font-size: 24px;
-   color: rgba(0, 0, 0, 0.8);
+   font-size: 19px;
+   color: #808080;
    font-weight: 300;
 }
 
@@ -155,10 +155,12 @@
 }
 
 .overbox .input:before {
+   color: #808080;
    background: rgba(255, 255, 255, 0.5);
 }
 
 .input label {
+   color: #808080;
    position: absolute;
    top: 10px;
    left: 0;
@@ -296,9 +298,12 @@
 	top: -8%
 }
 
-.overbox .input input,
-.overbox .input label {
+.overbox .input input {
 	color: #fff;
+}
+
+.overbox .input label {
+	color: #808080
 }
 
 .overbox .input input {

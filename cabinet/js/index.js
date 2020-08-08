@@ -1,13 +1,14 @@
 $(function() {
-
+	
    $(".input input").focus(function() {
-
       $(this).parent(".input").each(function() {
          $("label", this).css({
-            "line-height": "18px",
-            "font-size": "18px",
+			"color": "#FFFFFF",
+			"opacity": "0",
+            "line-height": "0px",
+            "font-size": "10px",
             "font-weight": "100",
-            "top": "15px"
+            "top": "16px"
          })
          $(".spin", this).css({
             "width": "100%"
@@ -21,14 +22,16 @@ $(function() {
          $(this).parent(".input").each(function() {
             $("label", this).css({
                "line-height": "60px",
-               "font-size": "18px",
+               "font-size": "19px",
                "font-weight": "300",
-               "top": "25px"
+               "top": "10px",
+			   "opacity": "1",
+               "color": "#808080"
             })
          });
 
       }
-   });	
+   });
 
    $(".button").click(function(e) {
       var pX = e.pageX,
