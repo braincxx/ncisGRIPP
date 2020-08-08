@@ -1,0 +1,20 @@
+{% extends 'layouts/main.html' %}
+
+{% block content %}
+
+<div class="page-container">
+
+    <section class="page-header">
+        <h2>Карта очагов заболеваемости</h2>
+    </section>
+
+    <section class="page-container">
+        <div>
+            <iframe src="https://coronavirus-monitor.ru/map" frameBorder="0"
+                    style="width: 100%; min-height: 800px;"></iframe>
+        </div>
+    </section>
+
+</div>
+
+{% endblock %}

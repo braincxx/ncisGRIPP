@@ -11,11 +11,11 @@ class Level(Enum):
 
 class Notification(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    # author_id = db.Column(db.String(80), nullable=False)
     recipient_id = db.Column(db.Integer, db.ForeignKey(User.id), nullable=False)
     title = db.Column(db.String(80), nullable=False)
     text = db.Column(db.String(1024), nullable=False)
     date = db.Column(db.DateTime(timezone=True), default=db.func.now())
+    level = db.Column(db.Enum(Level), nullable=False)
 
     def __repr__(self):
         return "Notification(id={}, recipient_id={}, title={}, text={}, date={})". \

@@ -15,7 +15,11 @@ class UsersService(Service):
         surname=dict(type='string', required=True, minlength=3, maxlength=60),
         email=DataValidator.DATA_SCHEMA_UNIQUE_EMAIL_RULE,
         password=dict(type='string', required=True, minlength=3, maxlength=60),
-        role=dict(allowed=[UserRole.Admin, UserRole.User])
+        role=dict(allowed=[UserRole.Admin, UserRole.User]),
+        passport=dict(type='integer', required=True, min=1000000000, max=9999999999),
+        city=dict(type='string', required=True, minlength=3, maxlength=160),
+        street=dict(type='string', required=True, minlength=3, maxlength=160),
+        phone=dict(type='string', required=True, minlength=3, maxlength=160),
     )
 
     __update_user_schema = dict(
@@ -38,12 +42,19 @@ class UsersService(Service):
 
         self.users_repository = UsersRepository.instance()
 
-    def create_user(self, name: str, surname: str, email: str, password: str, role: UserRole):
+    def create_user(self, name: str, surname: str, email: str, password: str,
+                    city: str, street: str, phone: str,
+                    passport: str, role: UserRole):
+
         user_data = dict(name=name,
                          surname=surname,
                          email=email,
                          password=password,
-                         role=role)
+                         role=role,
+                         city=city,
+                         street=street,
+                         passport=int(passport),
+                         phone=phone)
 
         validation_result, errors = DataValidator.validate_data(user_data, UsersService.__create_user_schema)
 

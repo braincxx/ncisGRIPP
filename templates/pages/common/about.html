@@ -1,0 +1,46 @@
+{% extends 'layouts/main.html' %}
+
+{% block content %}
+
+<div class="page-container">
+
+    <section class="page-header">
+        <h2>О команде</h2>
+    </section>
+
+    <section class="page-container">
+
+
+    <div class="container">
+        <div class="col-md-4">
+            <img src="{{ url_for('static', filename='images/v1.jpg') }}" style="max-width: 100%;" />
+        </div>
+        <div class="col-md-4">
+            <img src="{{ url_for('static', filename='images/v2.jpg') }}" style="max-width: 100%;" />
+        </div>
+        <div class="col-md-4">
+            <img src="{{ url_for('static', filename='images/v3.jpg') }}" style="max-width: 100%;" />
+        </div>
+    </div>
+
+    <br><br>
+
+    <div class="container">
+        <div class="col-md-4">
+            <img src="{{ url_for('static', filename='images/v4.jpg') }}" style="max-width: 100%;" />
+        </div>
+        <div class="col-md-4">
+            <img src="{{ url_for('static', filename='images/v5.jpg') }}" style="max-width: 100%;" />
+        </div>
+        <div class="col-md-4">
+            <img src="{{ url_for('static', filename='images/v6.jpg') }}" style="max-width: 100%;" />
+        </div>
+    </div>
+
+
+    </section>
+
+</div>
+
+
+{% endblock %}

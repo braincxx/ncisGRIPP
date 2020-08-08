@@ -1,0 +1,69 @@
+{% extends 'layouts/main.html' %}
+
+{% block content %}
+
+
+<div id="ipad" class="ipad">
+    <div class="container">
+        <div class="row">
+
+            <div class="col-lg-12 col-md-12">
+                <h1>Новые пособия семьям с детьми</h1>
+                <h3>Новые выплат семьям с детьми:</h3>
+                <h3> 5 тыс. рублей на детей в возрасте до 3 лет около </h3>
+                <h3>5,5 тыс. рублей на детей от 3 до 7 лет </h3>
+                <h3>10 тыс. рублей на детей от 3 до 16 лет </h3>
+                <h3>10 тыс. рублей на детей до 16 лет</h3>
+            </div>
+
+            <div class="col-lg-12 col-md-12">
+                <img src="{{ url_for('static', filename='images/family.jpg') }}" class="img-responsive">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- pen -->
+
+<div id="pen" class="pen">
+    <div class="container">
+        <div class="row">
+
+            <div class="col-lg-12 col-md-12" id="pro">
+                <h3>Поддержка малого бизнеса&nbsp;</h3>
+                <img src="{{ url_for('static', filename='images/buis.png') }}" class="img-responsive">
+
+
+            </div>
+
+            <div class="col-lg-12 col-md-12">
+                <img src="{{ url_for('static', filename='images/biz2-1.jpg') }}" class="img-responsive" width="900">
+                <h3>Поддержка работников и волонтеров</h3>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- end pen -->
+
+
+    <!-- fun -->
+
+    <div id="fun" class="fun">
+        <div class="container">
+            <div class="row">
+
+                <div class="col-lg-12 col-md-12">
+                    <h2>Экономика.</h2>
+                    <h2>Развитие.</h2>
+                    <img src="{{ url_for('static', filename='images/razvitie-ekonomiki.jpg') }}" class="img-responsive">
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+    {% endblock %}

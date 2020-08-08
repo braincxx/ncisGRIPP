@@ -3,10 +3,8 @@ from application.repository import UsersRepository
 
 
 class DataValidator(Validator):
-    DATA_SCHEMA_EMAIL_RULE = dict(type='string', required=True,
-                                  regex='^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$')
-    DATA_SCHEMA_UNIQUE_EMAIL_RULE = dict(type='string', required=True,
-                                         regex='^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$', unique_email=True)
+    DATA_SCHEMA_EMAIL_RULE = dict(type='string', required=True)
+    DATA_SCHEMA_UNIQUE_EMAIL_RULE = dict(type='string', required=True, unique_email=True)
 
     def _validate_unique_email(self, unique_email, field, value):
         """ Test the uniqueness of an email.

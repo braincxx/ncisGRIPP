@@ -33,7 +33,7 @@ class NotificationsService(Service):
 
         self.notifications_repository = NotificationsRepository.instance()
 
-    def create_user(self, name: str, surname: str, email: str, password: str, role: UserRole):
+    def create(self, name: str, surname: str, email: str, password: str, role: UserRole):
         data = dict(name=name,
                     surname=surname,
                     email=email,
@@ -49,7 +49,7 @@ class NotificationsService(Service):
 
         self.notifications_repository.save(notification)
 
-    def update_notification(self, notification: Notification):
+    def update(self, notification: Notification):
         data = dict(title=notification.title,
                     text=notification.text)
 

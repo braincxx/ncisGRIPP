@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Национальная система оперативного оповещения граждан | {% block title %} {{ page.title }} {% endblock
+        %}</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+
+</head>
+<body>
+
+<!-- navbar -->
+
+<div class="banner">
+    <nav class="navbar navbar-defualt">
+
+        <div class="container">
+
+            <ul class="nav navbar-nav">
+
+                <li><a href="{{ url_for('index') }}">
+                    <img src="{{ url_for('static', filename='images/logo.png') }}" style="height: 32px;">
+                </a></li>
+                <li><a href="{{ url_for('news') }}">Новости&nbsp;</a></li>
+                <li><a href="{{ url_for('actions') }}">Меры&nbsp;</a></li>
+                <li><a href="iphone.html">Вопросы и ответы</a></li>
+
+                <li><a href="{{ url_for('virus_map') }}">Карта распространения</a></li>
+                <li><a href="{{ url_for('about') }}">О команде</a></li>
+
+                <li><a href="/dashboard">Личный кабинет</a></li>
+
+                {% if current_user.is_authenticated %}
+                <li><a href="/logout">Выход</a></li>
+                {% else %}
+                <li><a href="/register">Регистрация</a></li>
+
+                {% endif %}
+
+                <li><a href="#"><i class="fa fa-search" aria-hidden="true"></i></a></li>
+                <li><a href="#"><i class="fa fa-calendar-o" aria-hidden="true"></i></a></li>
+            </ul>
+        </div>
+    </nav>
+</div>
+
+{% block content %}
+{% endblock %}
+
+<!-- service -->
+<div id="service" class="service">
+    <div class="container">
+        <div class="row">
+
+            <div class="col-lg-2 col-md-2">
+                <h6>О вирусе</h6>
+                <p>Симптомы</p>
+                <p>Пути передачи</p>
+                <p style="text-align: left;">7 шагов по профилактике</p>
+                <p>Мифы о вирусе</p>
+                <p>Мировая статистика</p>
+                <p>Новости</p>
+            </div>
+
+            <div class="col-lg-2 col-md-2">
+                <h6> Правительственные меры&nbsp;</h6>
+                <p>Каждому</p>
+                <p>Предприятиям</p>
+                <p>Работодателям</p>
+                <p>Работникам</p>
+                <p>Волонтерам</p>
+                <p>Пожилым людям</p>
+                <p>Родителям </p>
+                <p>Учащимся&nbsp;</p>
+            </div>
+
+
+            <div class="col-lg-2 col-md-2">
+                <h6>Вопросы и ответы</h6>
+                <p>Методы борьбы</p>
+                <p>Основные ошибки&nbsp;</p>
+                <p>Взаимодействие&nbsp;</p>
+                <p>Распространение</p>
+
+
+            </div>
+            <div class="col-lg-2 col-md-2">
+                <h6> О команде&nbsp;</h6>
+                <p>Инвестиции</p>
+                <p>Мероприятия</p>
+                <p>Контакты</p>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- end service -->
+
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+</body>
+</html>

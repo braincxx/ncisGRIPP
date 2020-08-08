@@ -1,0 +1,60 @@
+{% extends 'layouts/main.html' %}
+
+{% block content %}
+
+<div class="page-container">
+
+    <section class="page-header">
+        <h2>Уведомления и рекомендации</h2>
+    </section>
+
+    <section class="page-header">
+        <h3>Плановые события</h3>
+    </section>
+
+    <div class="notifications-list">
+
+        <div class="panel panel-primary">
+            <div class="panel-heading" style="text-align: left;"><span class="badge badge-secondary">08.08.2020</span>
+                Проверьте список прививок до 30.12.2020
+            </div>
+            <div class="panel-body">До 30.12.2020 необходимо проверить актуальность списка прививок и пройти вакцинацию
+                при необходимости.
+            </div>
+        </div>
+
+        <div class="panel panel-primary">
+            <div class="panel-heading" style="text-align: left;"><span class="badge badge-secondary">08.08.2020</span>
+                Плановое медицинское обследование
+            </div>
+            <div class="panel-body">
+                Приближается плановое медицинское обследование. Проверьте актуальность медицинской карточки.
+            </div>
+        </div>
+
+    </div>
+
+    <hr>
+
+    <section class="page-header">
+        <h3>Новые уведомления</h3>
+    </section>
+
+    <div class="notifications-list">
+
+        {% for notification in notifications %}
+
+        <div class="panel {% if notification.level.value == 1 %}panel-danger{% else %}panel-primary{% endif %}">
+            <div class="panel-heading" style="text-align: left;"><span class="badge badge-secondary">{{ notification.date|format_date_time }}</span>
+                {{ notification.title }}
+            </div>
+            <div class="panel-body">{{ notification.text }}</div>
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+{% endblock %}
