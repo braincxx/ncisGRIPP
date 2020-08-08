@@ -1,11 +1,12 @@
 import datetime
 import logging
 
-from telegram.ext import Updater, Defaults, Filters
+from telegram.ext import Updater, Defaults, Filters, CallbackQueryHandler
 from telegram.ext import CommandHandler, ConversationHandler, MessageHandler
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 
 from application.repository.users_repository import UsersRepository
+from application.repository.notifications_repository import NotificationsRepository
 from application.service.users import UsersService
 
 import config
@@ -24,11 +25,12 @@ def initialize():
 
 
 def init_user(user):
+    print(user.__dict__)
     if user.tg_logged == 1:
-        dp[user.id]['name'] = user.name
-        dp[user.id]['surname'] = user.surname
-        dp[user.id]['email'] = user.email
-        dp[user.id]['logged'] = True
+        dp.user_data[user.id]['name'] = user.name
+        dp.user_data[user.id]['surname'] = user.surname
+        dp.user_data[user.id]['email'] = user.email
+        dp.user_data[user.id]['logged'] = True
 
 
 # /start
@@ -42,9 +44,7 @@ def do_start_command(update, context):
 
     context.bot.sendMessage(
         chat_id=update.message.chat_id,
-        text="""Вас приветствует бот национальной системы оперативного оповещения.
-Моя задача отправлять актуальные уведомления на тему г
-"""
+        text="""Вас приветствует бот национальной системы оперативного оповещения. Для полулчеия справки введите /help"""
     )
 
 
@@ -65,8 +65,144 @@ def mail_notification(context):
         )
 
 
-def show_all_mails(update, context):
+def form_mails_list():
+    notes_db = NotificationsRepository.instance().get_all()
 
+    message = '<b>Актуальные новости:</b>\n\n'
+    for note in reversed(notes_db):
+        message += f"-{note.title}\n"
+    return message
+
+
+def form_mails_keyboard(mails_amount=None):
+    notes_db = NotificationsRepository.instance().get_all()
+
+    if mails_amount is None:
+        mails_amount = len(notes_db)
+
+    keyboard_markup = InlineKeyboardMarkup([
+        [InlineKeyboardButton(
+            text=f"{mail.title}",
+            callback_data=f"{mail.id}"
+        )] for mail in reversed(notes_db)
+    ] + [[InlineKeyboardButton(text='Назад', callback_data='mails_return')]])
+
+    return keyboard_markup
+
+
+def do_mails(update, context):
+
+    bot_message = form_mails_list()
+
+    keyboard_markup = InlineKeyboardMarkup([
+        [InlineKeyboardButton(text="Подробнее", callback_data='mails_more'),
+         InlineKeyboardButton(text="Закончить", callback_data='mails_end')]
+    ])
+
+    context.bot.send_message(
+        chat_id=update.message.chat_id,
+        text=bot_message,
+        reply_markup=keyboard_markup
+    )
+
+
+def find_mails(update, context):
+    mails_id = update.callback_query.data.replace('mails: ', '')
+    print(mails_id)
+
+    notes_db = NotificationsRepository.instance().get_all()
+
+    bot_message = None
+    for mails in notes_db:
+        if mails.id == mails_id:
+            bot_message = f"<b>{mails.title}</b>\n\n" \
+                          f"{mails.text}\n"
+
+    context.bot.delete_message(
+        chat_id=update.callback_query.message.chat_id,
+        message_id=update.callback_query.message.message_id
+    )
+
+    keyboard_markup = InlineKeyboardMarkup([
+        [InlineKeyboardButton(text="Назад", callback_data='mails_back'),
+         InlineKeyboardButton(text='Показать все', callback_data='mails_to_all')],
+         [InlineKeyboardButton(text="Закончить", callback_data='mails_end')]
+    ])
+
+    context.bot.send_message(
+        chat_id=update.callback_query.message.chat_id,
+        text=bot_message,
+        reply_markup=keyboard_markup
+    )
+
+
+def more_mails(update, context):
+    notes_db = NotificationsRepository.instance().get_all()
+
+    query = update.callback_query
+    chat_id = query.message.chat_id
+    message_id = query.message.message_id
+
+    keyboard_markup = InlineKeyboardMarkup([
+        [InlineKeyboardButton(
+            text=f"{note.title}",
+            callback_data=f"mails: {note.id}"
+        )] for note in notes_db
+    ] + [[InlineKeyboardButton(text='Назад', callback_data='mails_return')]])
+
+    context.bot.edit_message_text(
+        chat_id=chat_id,
+        message_id=message_id,
+        text='<b>Актуальные новости:</b>\n'
+    )
+
+    context.bot.edit_message_reply_markup(
+        chat_id=chat_id,
+        message_id=message_id,
+        reply_markup=keyboard_markup
+    )
+
+
+def mails_back(update, context):
+
+    keyboard_markup = form_mails_keyboard()
+
+    context.bot.send_message(
+        chat_id=update.callback_query.message.chat_id,
+        text='<b>Актуальные новости:</b>\n',
+        reply_markup=keyboard_markup
+    )
+
+
+def return_to_mails_list(update, context):
+
+    bot_message = form_mails_list()
+
+    keyboard_markup = InlineKeyboardMarkup([
+        [InlineKeyboardButton(text="Подробнее", callback_data='mails_more'),
+         InlineKeyboardButton(text='Показать все', callback_data='mails_show_all')],
+         [InlineKeyboardButton(text="Закончить", callback_data='mails_end')]
+    ])
+
+    context.bot.edit_message_text(
+        chat_id=update.callback_query.message.chat_id,
+        message_id=update.callback_query.message.message_id,
+        text=bot_message
+    )
+
+    context.bot.edit_message_reply_markup(
+        chat_id=update.callback_query.message.chat_id,
+        message_id=update.callback_query.message.message_id,
+        reply_markup=keyboard_markup
+    )
+
+
+def mails_end(update, context):
+    context.bot.edit_message_reply_markup(
+        chat_id=update.callback_query.message.chat_id,
+        message_id=update.callback_query.message.message_id,
+        reply_markup=None
+    )
 
 
 # /login
@@ -75,14 +211,18 @@ def do_login(update, context):
         'email': context.user_data['email'],
         'password': context.user_data['password'],
     }
-    user = UsersService().instance().find_user_by_credentials(data['email'], data['password'])
+    user = UsersService().instance().find_user_by_credentials(data['email'], data['password']) or False
     del context.user_data['password']
 
     if user:
-        context['name'] = user.name
-        context['surname'] = user.surname
+        context.user_data['name'] = user.name
+        context.user_data['surname'] = user.surname
         user.tg_logged = 1
-        UsersRepository.save(user)
+        context.bot.send_message(
+            chat_id=update.message.chat_id,
+            text='Вы авторизованы.'
+        )
+        UsersRepository.instance().save(user=user)
     else:
         context.bot.send_message(
             chat_id=update.message.chat_id,
@@ -194,7 +334,19 @@ if __name__ == '__main__':
         )
     )
     # /all_mails
-    dp.add_handler(CommandHandler('all_mails', callback=show_all_mails))
+    mails_handler = CommandHandler(command='mails', callback=do_mails)
+    more_mails = CallbackQueryHandler(callback=more_mails, pattern='mails_more')
+    find_mails = CallbackQueryHandler(callback=find_mails, pattern=r'mails: .+')
+    mails_back = CallbackQueryHandler(callback=mails_back, pattern='mails_back')
+    return_to_mails_list = CallbackQueryHandler(callback=return_to_mails_list, pattern='mails_return')
+    mails_end = CallbackQueryHandler(callback=mails_end, pattern='mails_end')
+
+    dp.add_handler(mails_handler, group=1)
+    dp.add_handler(more_mails, group=1)
+    dp.add_handler(find_mails, group=1)
+    dp.add_handler(mails_back, group=1)
+    dp.add_handler(return_to_mails_list, group=1)
+    dp.add_handler(mails_end, group=1)
 
     initialize()
     updater.start_polling()
